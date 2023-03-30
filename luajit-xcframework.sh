@@ -16,6 +16,7 @@ cp src/lauxlib.h headers/
 cp src/luaconf.h headers/
 cp src/luajit.h headers/
 cp src/lualib.h headers/
+cp src/lua.hpp headers/
 
 mkdir lib
 

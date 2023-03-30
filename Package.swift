@@ -9,11 +9,11 @@ let package = Package(
     products: [
         .library(
             name: "LuaJIT",
-            targets: ["LuaJIT_framework"])
+            targets: ["luajit"])
     ],
     targets: [
         .binaryTarget(
-            name: "LuaJIT_framework",
+            name: "luajit",
             path: "luajit.xcframework"
         )
     ]

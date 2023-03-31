@@ -6,7 +6,6 @@ rm -rf luajit
 git clone https://github.com/audulus/LuaJIT.git 
 cd luajit
 
-rm -rf luajit.xcframework
 rm -rf headers
 rm -rf lib
 

@@ -6,6 +6,8 @@ rm -rf luajit
 git clone https://github.com/audulus/LuaJIT.git 
 cd luajit
 
+git checkout debug
+
 mkdir headers
 cp src/lua.h headers/
 cp src/lauxlib.h headers/

@@ -54,13 +54,28 @@ make DEFAULT_CC=clang CROSS="$(dirname $ICC)/" \
 # iOS/x64 simulator
 ISDKP=$(xcrun --sdk iphonesimulator --show-sdk-path)
 ICC=$(xcrun --sdk iphonesimulator --find clang)
-ISDKF="-arch x86_64 -isysroot $ISDKP -miphoneos-version-min=14.0"
+ISDKF="-arch x86_64 -isysroot $ISDKP -mios-simulator-version-min=14.0"
 make DEFAULT_CC=clang CROSS="$(dirname $ICC)/" \
      TARGET_FLAGS="$ISDKF" TARGET_SYS=iOS amalg
-mv src/libluajit.a lib/libluajit_iOS_simulator.a
+mv src/libluajit.a lib/libluajit_iOS_simulator_x86_64.a
 make DEFAULT_CC=clang CROSS="$(dirname $ICC)/" \
      TARGET_FLAGS="$ISDKF" TARGET_SYS=iOS clean 
 
+# iOS/ARM64 simulator
+ISDKP=$(xcrun --sdk iphonesimulator --show-sdk-path)
+ICC=$(xcrun --sdk iphonesimulator --find clang)
+ISDKF="-arch arm64 -isysroot $ISDKP -mios-simulator-version-min=14.0"
+make DEFAULT_CC=clang CROSS="$(dirname $ICC)/" \
+     TARGET_FLAGS="$ISDKF" TARGET_SYS=iOS amalg
+mv src/libluajit.a lib/libluajit_iOS_simulator_a64.a
+make DEFAULT_CC=clang CROSS="$(dirname $ICC)/" \
+     TARGET_FLAGS="$ISDKF" TARGET_SYS=iOS clean 
+
+# combine iOS simulator libraries
+lipo -create -output lib/libluajit_iOS_simulator.a lib/libluajit_iOS_simulator_x86_64.a lib/libluajit_iOS_simulator_a64.a
+
+
+echo "Creating xcframework"
 xcodebuild -create-xcframework \
            -library lib/libluajit_macos.a \
            -headers headers/ \

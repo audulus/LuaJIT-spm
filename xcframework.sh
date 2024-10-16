@@ -5,6 +5,7 @@ rm -rf luajit.xcframework
 rm -rf luajit
 git clone https://github.com/audulus/LuaJIT.git 
 cd luajit
+git checkout 505e2c0
 
 mkdir headers
 cp src/lua.h headers/

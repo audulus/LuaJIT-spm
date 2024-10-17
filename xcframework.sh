@@ -5,15 +5,16 @@ rm -rf luajit.xcframework
 rm -rf luajit
 git clone https://github.com/audulus/LuaJIT.git 
 cd luajit
-git checkout 505e2c0
 
-mkdir headers
-cp src/lua.h headers/
-cp src/lauxlib.h headers/
-cp src/luaconf.h headers/
-cp src/luajit.h headers/
-cp src/lualib.h headers/
-cp src/lua.hpp headers/
+function copy_headers {
+  mkdir $1 
+  cp src/lua.h $1/
+  cp src/lauxlib.h $1/
+  cp src/luaconf.h $1/
+  cp src/luajit.h $1/ 
+  cp src/lualib.h $1/
+  cp src/lua.hpp $1/
+}
 
 mkdir lib
 
@@ -36,6 +37,7 @@ ISDKF="-arch arm64 -isysroot $ISDKP -mmacosx-version-min=11.0"
 make DEFAULT_CC=clang CROSS="$(dirname $ICC)/" \
      TARGET_FLAGS="$ISDKF" amalg
 mv src/libluajit.a lib/libluajit_macOS_arm64.a
+copy_headers headers_macOS
 make DEFAULT_CC=clang CROSS="$(dirname $ICC)/" \
      TARGET_FLAGS="$ISDKF" clean 
 
@@ -49,6 +51,7 @@ ISDKF="-arch arm64 -isysroot $ISDKP -miphoneos-version-min=14.0"
 make DEFAULT_CC=clang CROSS="$(dirname $ICC)/" \
      TARGET_FLAGS="$ISDKF" TARGET_SYS=iOS amalg
 mv src/libluajit.a lib/libluajitA64.a
+copy_headers headers_iOS
 make DEFAULT_CC=clang CROSS="$(dirname $ICC)/" \
      TARGET_FLAGS="$ISDKF" TARGET_SYS=iOS clean 
 
@@ -69,6 +72,7 @@ ISDKF="-arch arm64 -isysroot $ISDKP -mios-simulator-version-min=14.0"
 make DEFAULT_CC=clang CROSS="$(dirname $ICC)/" \
      TARGET_FLAGS="$ISDKF" TARGET_SYS=iOS amalg
 mv src/libluajit.a lib/libluajit_iOS_simulator_a64.a
+copy_headers headers_iOS_sim
 make DEFAULT_CC=clang CROSS="$(dirname $ICC)/" \
      TARGET_FLAGS="$ISDKF" TARGET_SYS=iOS clean 
 
@@ -79,11 +83,11 @@ lipo -create -output lib/libluajit_iOS_simulator.a lib/libluajit_iOS_simulator_x
 echo "Creating xcframework"
 xcodebuild -create-xcframework \
            -library lib/libluajit_macos.a \
-           -headers headers/ \
+           -headers headers_macOS \
            -library lib/libluajitA64.a \
-           -headers headers/ \
+           -headers headers_iOS \
            -library lib/libluajit_iOS_simulator.a \
-           -headers headers/ \
+           -headers headers_iOS_sim \
            -output luajit.xcframework
 
 mv luajit.xcframework ..
